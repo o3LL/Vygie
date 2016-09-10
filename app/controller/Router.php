@@ -1,66 +1,64 @@
 <?php
 
-//include_once 'model/DataReport.class.php';
-include_once 'model/templateParser.class.php';
-include 'vendor/autoload.php';
+include '../../vendor/autoload.php';
 
 
 // router init
 $router = new AltoRouter();
-$router->setBasePath('/');
+$router->setBasePath('/alert');
 
 
 /*
 * Route map settings
 */
 $router->map('GET|POST','/', function(  ){
-    $method = "reportlist";
+    $method = "index";
     $arg['format'] = 'html';
     $arg['view'] = 'index';
-    include_once 'controller/Controller.php';
+    include_once 'Control.php';
 });
 
 $router->map('GET|POST','/admin/', function(  ){
     $method = "admin";
     $arg['format'] = 'html';
     $arg['view'] = 'admin';
-    include_once 'controller/Controller.php';
+    include_once 'Control.php';
 });
 
 $router->map('POST','/[i:id]/edit', function( $id ){
     $method = "edit";
-    include_once 'controller/Controller.php';
+    include_once 'Control.php';
 });
 
 $router->map('POST','/[i:id]/update/', function(  ){
     $method = "update";
-    include_once 'controller/Controller.php';
+    include_once 'Control.php';
 });
 
 $router->map('POST','/[i:id]/delete/', function(  ){
     $method = "delete";
-    include_once 'controller/Controller.php';
+    include_once 'Control.php';
 });
 
 $router->map('GET|POST','/login/', function( ){
     $method = "login";
     $arg['view'] = 'login';
     $arg['format'] = 'html';
-    include_once 'controller/Controller.php';
+    include_once 'Control.php';
 });
 
 $router->map('GET|POST','/logout/', function( ){
     $method = "logout";
     $arg['view'] = 'logout';
     $arg['format'] = 'html';
-    include_once 'controller/Controller.php';
+    include_once 'Control.php';
 });
 
 $router->map('GET|POST','/contact/', function(){
     $method = "contact";
     $arg['format'] = 'html';
     $arg['view'] = 'contact';
-    include_once 'controller/Controller.php';
+    include_once 'Control.php';
 
 });
 
@@ -74,5 +72,5 @@ if( $match && is_callable( $match['target'] ) ) {
     $method = "404";
     $arg['format'] = 'html';
     $arg['view'] = '404';
-    include_once 'controller/Controller.php';
+    include_once 'Control.php';
 }

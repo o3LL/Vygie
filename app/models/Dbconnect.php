@@ -7,7 +7,7 @@ class db
     $this->orderby = false;
     $this->username = ""; // Votre nom d'utilisateur
     $this->password = ""; // Votre mot de passe
-    $this->database = ""; // Le nom de la base de donnée
+    $this->database = "data_alert"; // Le nom de la base de donnée
     $this->hostname = "localhost"; // l'adresse du serveur mysql (le nom de l'hôte)
     $this->error = 0; // init l'erreur a 0
     $this->debug = 0;

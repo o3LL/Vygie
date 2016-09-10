@@ -11,7 +11,7 @@ class Auth
     public function __construct()
     {
         //init db object
-        require_once 'model/db.class.php';
+        require_once BASEPATH . 'models/Dbconnect.php';
         $this->db = new db();
         $this->author = 'author';
         $this->error = array();
@@ -19,7 +19,7 @@ class Auth
         $this->errMsg = array();
         $this->user = false;
         $this->secretKey = "iaz_rgfè_egzàùçé&$*sd2342:.&é";
-        $this->basedir = '/spamreportv2/';
+        $this->basedir = '/alert/';
     }
 
 
@@ -255,13 +255,7 @@ class Auth
                         "registered" => 1,
                         "token" => $token
                     ));
-                // create mail confirmation
-               //$user_id = $this->db->pdo->lastInsertId();
-                // On envoit l'email de confirmation
-    //            mail($_POST['email'], 'Confirmation de votre compte', "Afin de valider votre compte merci de cliquer sur ce lien\n\nhttp:/leog.student.codeur.online/confirm.php?id=$user_id&token=$token");
-    //            // On redirige l'utilisateur vers la page de login avec un message flash
-    //            $_SESSION['flash']['success'] = 'Un mail de confirmation vous a été envoyé pour valider votre compte';
-    //            header('Location: login.php');
+               
                 return $req;
             }
         }

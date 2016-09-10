@@ -1,4 +1,5 @@
 <?php
+define('BASEPATH', dirname(__DIR__));
 
 include_once('model/DataReport.class.php');
 $dr = new DataReport();

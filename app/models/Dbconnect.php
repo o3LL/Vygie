@@ -14,6 +14,18 @@ class db
 
   }
 
+	public function getColumnNames($table){
+    
+        $sql = 'SHOW COLUMNS FROM ' . $table;
+        $this->connect_db();
+        $this->prepare_sql($sql);
+        $this->execute($arg);
+        $data = $this->fetchAll();
+		        
+        return $data;
+             
+    }	
+
   public function selectSQL($sql, $exec = NULL) {
     if ($this->debug == 1) {
       echo "<br /> Exec = ";

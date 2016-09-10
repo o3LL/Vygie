@@ -20,11 +20,17 @@ class DataImporter {
 				// Vous ne devriez pas avoir à éditer les paramètres suivant:
 				$this->Settings['column_delimiter'] = ";";
 				$this->Settings['line_delimiter'] = "\r\n";
+				$this->Settings['convert_encoding'] = true;
 
 
-			if($settings)
+			if(file_exists($settings))
 				{
-					$this->Settings = $settings;
+					$set = parse_ini_file($settings,true);
+					foreach($set['importer'] as $key => $value)
+						{
+							$this->Settings[$key] = $value;	
+						}
+					
 				
 				}
 								
@@ -78,7 +84,7 @@ class DataImporter {
 			for($i=1; $i < sizeof($column); $i++)
 				{
 					$fields[] = '`'.$column[$i]['Field'].'`';
-					$columns[] = "'"."{col_".$i.'}'."'";
+					$columns[] = "'"."{col_".($i-1).'}'."'";
 				}
 			$fieldlist = implode(",",$fields);
 			$columnlist = implode(",",$columns);
@@ -95,7 +101,7 @@ class DataImporter {
 					$sql_tmp = $tpl;
 					for($j=0; $j < sizeof($data[$i]); $j++)
 						{
-							$sql_tmp = str_replace("{col_".$j."}",$data[$i][$j],$sql_tmp);
+							$sql_tmp = str_replace("{col_".$j."}",addslashes($data[$i][$j]),$sql_tmp);
 						}
 					$sql .= $sql_tmp;
 				}
@@ -140,6 +146,10 @@ class DataImporter {
 		{
 			
 			$content = file_get_contents($url);
+			if($this->Settings['convert_encoding'])
+				{
+					$content = mb_convert_encoding($content,"UTF-8","ISO-8859-1");
+				}
 
 			if(!$content) {
 				return false;

@@ -1,0 +1,13 @@
+{
+    "name": "root/alertsante",
+    "authors": [
+        {
+            "name": "Léo Grand",
+            "email": "leograndcontact@gmail.com"
+        }
+    ],
+    "require": {
+        "altorouter/altorouter": "1.2.0",
+        "twig/twig": "1.24.2"
+    }
+}

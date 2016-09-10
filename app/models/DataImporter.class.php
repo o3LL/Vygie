@@ -23,9 +23,14 @@ class DataImporter {
 				$this->Settings['convert_encoding'] = true;
 
 
-			if($settings)
+			if(file_exists($settings))
 				{
-					$this->Settings = $settings;
+					$set = parse_ini_file($settings,true);
+					foreach($set['importer'] as $key => $value)
+						{
+							$this->Settings[$key] = $value;	
+						}
+					
 				
 				}
 								

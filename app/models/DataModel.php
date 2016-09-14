@@ -7,18 +7,23 @@ class DataModel
      */
     function __construct()
     {
-        $this->basedir = dirname(__FILE__) . '/';
+
+        $this->basedir = BASEPATH;
         //init db object
-        require_once BASEPATH . 'models/Dbconnect.php';
-        $this->db = new db();
+        require_once BASEPATH . '/app/models/Dbconnect.php';
+        $this->db = new Dbconnect(BASEPATH . "/test.ini");
         $this->error = false;
         $this->settings = [];
-        $this->settings['basepath'] = '/alert/';
+        $this->settings['basepath'] = BASEPATH. '/';
         $this->search = '';
         $this->errorMsg = [];
+        $this->databases = [
+            "data" => "DATA_POST",
+            "ecoles" => "dbecole"
+        ];
 
         //init auth object
-        require_once 'Auth.php';
+        require_once BASEPATH . '/app/models/Auth.php';
         $this->auth = new Auth();
 
 
@@ -37,7 +42,7 @@ class DataModel
         $pagedata['userdata'] = $this->auth->user;
         $pagedata['settings'] = $this->settings;
         $pagedata['user'] = $this->auth->user;
-        $pagedata['reportfromsearch'] = $_REQUEST['fromsearch'];
+        //$pagedata['reportfromsearch'] = $_REQUEST['fromsearch'];
 
 
 
@@ -46,6 +51,10 @@ class DataModel
                 $pagedata['results'] = '';
                 break;
 
+            case 'index' :
+                $pagedata['results'] = '';
+                break;
+                
             case 'subscribe' :
                 $data = $this->auth->verifUser($pagedata['formdata']);
                 if ($data) {
@@ -72,12 +81,17 @@ class DataModel
                 }
                 break;
 
+            case 'api_add':
+                $pagedata['results'] = $this->add($arg['data']);
+                break;
+
         }
 
 
         switch ($arg['format']) {
             case 'json' :
                 $data = json_encode($pagedata['results']);
+                
                 break;
             case 'html' :
                 $data = $this->parseTwig($pagedata, $arg['view']);
@@ -87,6 +101,7 @@ class DataModel
                 $data = $this->parseTwig($pagedata, $arg['view']);
                 break;
         }
+        
         
         return $data;
 
@@ -116,57 +131,33 @@ class DataModel
      * @param $data
      * @return array
      */
-    public function post($data) 
+    public function add( $data ) 
     {
-        return $array;
+        $sql = "INSERT INTO " . $this->databases['data'] . "(`date_request`, `type`, `send_from`) VALUES (NOW(), :type, :send_from);";
+        $exec = [
+            "type" => $data["disease"],
+            "send_from" =>  $data["id"]
+        ];
+        $result = $this->db->selectSQL($sql, $exec);
+        if ($result != false) {
+        	$return = 'Merci d\' avoir signalé ' . $data['disease'];
+        } else {
+        	$return = 'Erreur.';
+        }
+        return $return;
     }
 
     public function parseTwig($data, $view)
     {
-        $loader = new Twig_Loader_Filesystem('view/');
+        $loader = new Twig_Loader_Filesystem(BASEPATH . '/app/views');
         $twig = new Twig_Environment($loader, array(
             'cache' => false,
             'debug' => true
         ));
+        
         $twig->addExtension(new Twig_Extension_Debug());
+    
         return $twig->render($view . '.twig', $data);
-    }
-
-    /**
-     * Function addReport($report)
-     *
-     * @param (array) $report = from form
-     * @return (bool) true if it works
-     */
-    public function addReport($exec)
-    {
-        if ($this->reportExist($exec)) {
-            $this->error = true;
-            $this->errorMsg[] = 'Doublon !!!';
-        } else {
-            $sql = "INSERT INTO " . $this->report . "(`country`, `number`, `type`, `date`, `resume`, `author_id`, `json`) VALUES (:country, :number, :type, NOW(), :resume, :author_id, :json);";
-            $result = $this->db->selectSQL($sql, $exec);
-        }
-        return $result;
-    }
-
-    /**
-     * Function reportExist
-     * @param  [type] $sql [description]
-     * @return [type]      [description]
-     */
-    private function reportExist($array)
-    {
-        $number = array("number" => $array['number']);
-        $sql = "SELECT * FROM " . $this->report . " WHERE number = :number";
-        $result = $this->db->selectSQL($sql, $number);
-        if ($result == array()) {
-            $this->error = array("doublon" => false);
-            return false;
-        } else {
-            $this->error = array("doublon" => true);
-            return true;
-        }
     }
 
     public function checkAuth($arg, $cookie)

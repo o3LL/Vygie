@@ -11,14 +11,14 @@ class Auth
     public function __construct()
     {
         //init db object
-        require_once BASEPATH . 'models/Dbconnect.php';
-        $this->db = new db();
+        require_once BASEPATH . '/app/models/Dbconnect.php';
+        $this->db = new Dbconnect();
         $this->author = 'author';
         $this->error = array();
         $this->err = 0;
         $this->errMsg = array();
         $this->user = false;
-        $this->secretKey = "iaz_rgfè_egzàùçé&$*sd2342:.&é";
+        $this->secretKey = "";
         $this->basedir = '/alert/';
     }
 

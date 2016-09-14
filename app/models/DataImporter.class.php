@@ -12,7 +12,7 @@ class DataImporter {
 
 				$this->Settings['url_file'] = "data.csv"; // Url du fichier
 				$this->Settings['mysql_host'] = "localhost"; // Host de la base
-				$this->Settings['mysql_database'] = "julieng"; // Nom de la base
+				$this->Settings['mysql_database'] = ""; // Nom de la base
 				$this->Settings['mysql_table'] = "DATA_ECOLE"; // Nom de la table
 				$this->Settings['mysql_user'] = "USER"; // Nom d'utilisateur de la base
 				$this->Settings['mysql_pass'] = "PASS"; // Mot de passe de la base
@@ -30,6 +30,10 @@ class DataImporter {
 						{
 							$this->Settings[$key] = $value;	
 						}
+					foreach($set['phpsettings'] as $key => $value)
+						{
+							ini_set($key, $value);
+						}
 					
 				
 				}
@@ -37,9 +41,9 @@ class DataImporter {
 			$this->Current['error'] = false;	
 			$this->Current['error_msg'] = "";
 			
-			require_once("models/db.class.php");
+			require_once("app/models/Dbconnect.php");
 			
-			$this->db = new db();
+			$this->db = new Dbconnect();
 				
 		}
 	function import()
